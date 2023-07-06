@@ -1,0 +1,28 @@
+.options-search {
+  margin-left: 5%;
+}
+
+.time-btn-container {
+  display: flex;
+  justify-content: right;
+  margin: 2% 0%;
+}
+
+.time-btn-container button {
+  padding: 10px 15px;
+  border: none;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  border-radius: 50px;
+  transition: background-color 1s;
+}
+.time-btn-container button:hover {
+  background-color: #8884d8;
+  color: white;
+}
+
+.time-btn-container button.selected {
+  background-color: #333;
+  color: #fff;
+}

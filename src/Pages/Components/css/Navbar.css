@@ -1,0 +1,10 @@
+.bg-body-tertiary {
+  background-color: #8884d8 !important;
+}
+.nav-item {
+  color: #fffff2;
+  transition: color 1s;
+}
+.nav-item :hover {
+  color: white !important;
+}
