@@ -1,26 +1,39 @@
 .flex-container {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
   width: 100%;
   justify-content: center;
+  margin: 1.5% 0%;
+}
+.news-container {
+  width: 90% !important;
 }
 .item {
-  width: 100px;
   text-align: center;
   height: 150px;
-  font-size: 20px;
-  flex: 0 0 33%;
-  padding: 10px;
+  font-size: 16;
+  flex: 0 0 20%;
   align-items: center;
   display: flex;
-  color: black;
+  color: whitesmoke;
   font-weight: 500;
   transition: background-color 0.5s;
+  position: relative;
+  margin: 0.4%;
+  justify-content: center;
+}
+.inside-item {
+  width: 50%;
+  height: inherit;
+  position: relative;
+  align-items: center;
+}
+.item:hover .inside-item {
+  background-color: #28282b !important;
 }
 .item:hover {
   cursor: pointer;
   color: white;
-  background-color: #28282b !important;
   font-weight: 700;
 }
 
@@ -28,23 +41,57 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
-  margin: 0 auto;
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: 40%;
+  background-color: black;
+  border-radius: 25px;
+  opacity: 0.75;
+  padding: 1%;
+  transition: all 0.2s;
 }
-
+.item:hover .item-text {
+  background-color: whitesmoke !important;
+  color: black;
+  width: 85%;
+  height: 45%;
+  font-weight: 700;
+}
+.item:hover {
+  box-shadow: 2px 4px 36px 19px rgba(0, 0, 0, 0.41);
+  -webkit-box-shadow: 2px 4px 36px 19px rgba(0, 0, 0, 0.41);
+  -moz-box-shadow: 2px 4px 36px 19px rgba(0, 0, 0, 0.41);
+}
 .new-line {
   white-space: break-spaces;
 }
 
 .color-display {
   text-align: center;
+  position: relative;
 }
 .color-scale {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 .color-block {
   width: 40px;
-  height: 40px;
+  height: 19px;
+}
+.color-display-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  position: absolute;
 }

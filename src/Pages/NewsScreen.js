@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Modal from "react-bootstrap/Modal";
+import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
+
+import { TiTickOutline } from "react-icons/ti";
 
 import {
   LineChart,
@@ -23,6 +30,51 @@ const NewsScreen = () => {
   const [newsData, setnewsData] = useState(null);
 
   const [chartData, setchartData] = useState(null);
+
+  const [modalShow, setModalShow] = useState(false);
+
+  function MydModalWithGrid(props) {
+    return (
+      <Modal
+        {...props}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            This news has been reviewed <TiTickOutline color="green" />
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="grid-example">
+          <Container>
+            <Table striped bordered hover variant={theme}>
+              <thead>
+                <tr>
+                  <th>Reviewed By</th>
+                  <th>Reviewd On</th>
+                  <th>Attachment Link</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Aviral Nagpal</td>
+                  <td>25-07-23</td>
+                  <td>Link</td>
+                  <td>Under Investigation</td>
+                </tr>
+              </tbody>
+            </Table>
+          </Container>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={props.onHide}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -87,6 +139,10 @@ const NewsScreen = () => {
 
   return (
     <div>
+      {/* {newsData && (
+        <MydModalWithGrid show={true} onHide={() => setModalShow(false)} />
+      )} */}
+
       {newsData && (
         <div className="dashboard-container">
           <h1>Announcement Details</h1>

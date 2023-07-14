@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineArrowRight } from "react-icons/ai";
+import { AiOutlineArrowDown } from "react-icons/ai";
 
 import * as d3 from "d3";
 import "./css/NewsContainer.css";
@@ -11,7 +11,8 @@ const NewsContainer = () => {
   const max = 1;
   const navigate = useNavigate();
 
-  const colorScale = d3.scaleSequential([0, 100], d3.interpolatePurples);
+  const colorScalePurple = d3.scaleSequential([0, 100], d3.interpolatePurples);
+  const colorScaleRed = d3.scaleSequential([0, 100], d3.interpolateReds);
 
   const camelCase = (str) => {
     return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
@@ -39,46 +40,74 @@ const NewsContainer = () => {
 
   return (
     <div className="container-sh-pd">
-      <div className="color-display">
-        <h5>
-          {" "}
-          Increasing risk of Insider Trading <AiOutlineArrowRight />{" "}
-        </h5>
-        <div className="color-scale">
-          {Array.from({ length: 25 }, (_, i) => (
-            <div
-              key={i}
-              className="color-block"
-              style={{ backgroundColor: colorScale(i * 4) }}
-            ></div>
-          ))}
-        </div>
-      </div>
-      <br />
+      <h1 style={{ textAlign: "center" }}>
+        {" "}
+        Risk Assessment of Insider Trading through News Analysis
+      </h1>
       <div className="flex-container">
-        {newsData &&
-          newsData.map((item) => {
-            const handleClick = () => {
-              navigate(`/news/${item._id}`);
-            };
-            return (
+        <div className="color-display">
+          <div className="color-display-text">
+            Increase in risk score <AiOutlineArrowDown />{" "}
+          </div>
+          <div className="color-scale">
+            {Array.from({ length: 25 }, (_, i) => (
               <div
-                className="item"
-                key={item._id}
-                style={{
-                  backgroundColor: d3.interpolatePurples(
-                    min + Math.random() * (max - min)
-                  ),
-                }}
-                onClick={handleClick}
-              >
-                <p className="item-text">
-                  {" "}
-                  {camelCase(item.announcement_issuer_name.replace(/_/g, " "))}
-                </p>
-              </div>
-            );
-          })}
+                key={i}
+                className="color-block"
+                style={{ backgroundColor: colorScalePurple(i * 4) }}
+              ></div>
+            ))}
+          </div>
+        </div>
+        <br />
+        <div className="flex-container news-container">
+          {newsData &&
+            newsData.map((item) => {
+              const handleClick = () => {
+                navigate(`/news/${item._id}`);
+              };
+              return (
+                <div className="item" key={item._id} onClick={handleClick}>
+                  <p className="item-text">
+                    {" "}
+                    {camelCase(
+                      item.announcement_issuer_name.replace(/_/g, " ")
+                    )}
+                  </p>
+                  <div
+                    className="inside-item"
+                    style={{
+                      backgroundColor: d3.interpolatePurples(
+                        min + Math.random() * (max - min)
+                      ),
+                    }}
+                  ></div>
+                  <div
+                    className="inside-item"
+                    style={{
+                      backgroundColor: d3.interpolateOrRd(
+                        min + Math.random() * (max - min)
+                      ),
+                    }}
+                  ></div>
+                </div>
+              );
+            })}
+        </div>
+        <div className="color-display">
+          <div className="color-display-text">
+            Increase in risk score <AiOutlineArrowDown />{" "}
+          </div>
+          <div className="color-scale">
+            {Array.from({ length: 25 }, (_, i) => (
+              <div
+                key={i}
+                className="color-block"
+                style={{ backgroundColor: colorScaleRed(i * 4) }}
+              ></div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
