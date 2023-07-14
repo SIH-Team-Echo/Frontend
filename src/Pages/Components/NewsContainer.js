@@ -44,6 +44,7 @@ const NewsContainer = () => {
         {" "}
         Risk Assessment of Insider Trading through News Analysis
       </h1>
+
       <div className="flex-container">
         <div className="color-display">
           <div className="color-display-text">
@@ -64,7 +65,7 @@ const NewsContainer = () => {
           {newsData &&
             newsData.map((item) => {
               const handleClick = () => {
-                navigate(`/news/${item._id}`);
+                navigate(`/news/${item._id}/${item.ticker}`);
               };
               return (
                 <div className="item" key={item._id} onClick={handleClick}>

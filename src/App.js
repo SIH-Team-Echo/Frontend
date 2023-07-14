@@ -54,7 +54,7 @@ function App() {
         </Routes>
         <Routes>
           <Route
-            path="/news/:id"
+            path="/news/:id/:ticker"
             element={userInfo ? <NewsScreen /> : <Authentication />}
           ></Route>
         </Routes>

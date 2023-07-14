@@ -7,6 +7,7 @@ import Container from "react-bootstrap/Container";
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
+import { Spinner } from "react-bootstrap";
 
 import { TiTickOutline } from "react-icons/ti";
 
@@ -26,12 +27,17 @@ import {
 
 const NewsScreen = () => {
   const theme = "light";
-  const { id } = useParams();
+  const { id, ticker } = useParams();
+
   const [newsData, setnewsData] = useState(null);
 
   const [chartData, setchartData] = useState(null);
 
   const [modalShow, setModalShow] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [predData, setpredData] = useState(null);
 
   function MydModalWithGrid(props) {
     return (
@@ -88,14 +94,6 @@ const NewsScreen = () => {
         const stiData = JSON.parse(data[0].sti_data).Open;
         const volumeData = JSON.parse(data[0].volume_data);
         const avgTrading = data[0]["3_mnths_avg_trading_vol"];
-        // const parsedData = Object.entries(openPrices).map(
-        //   ([timestamp, price]) => ({
-        //     timestamp: timestamp,
-        //     openPrice: price,
-        //     stiData: stiData[timestamp],
-        //     volumeData: volumeData[timestamp],
-        //   })
-        // );
 
         const parsedData = Object.entries(openPrices).map(
           ([timestamp, price]) => {
@@ -122,9 +120,28 @@ const NewsScreen = () => {
       }
     };
     fetchData();
-  }, [id]);
+
+    const fetchPredictionData = async () => {
+      try {
+        const symbol = ticker;
+        const apiUrl = `http://127.0.0.1:5000/predicts/${symbol}.SI`;
+        const response = await fetch(apiUrl, {
+          method: "GET",
+        });
+        const data = await response.json();
+        setpredData(data.cadata);
+        setIsLoading(false);
+        // Extract the necessary data from the API response
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+    fetchPredictionData();
+  }, [id, ticker]);
 
   console.log(chartData);
+  console.log(predData);
+  console.log(newsData);
 
   const camelCase = (str) => {
     return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
@@ -238,12 +255,14 @@ const NewsScreen = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {newsData.key_points.split("\n").map((line, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}.</td>
-                      <td>{line.replace("-", "")}</td>
-                    </tr>
-                  ))}
+                  {newsData &&
+                    newsData.gpt_key_points &&
+                    newsData.gpt_key_points.split("\n").map((line, index) => (
+                      <tr key={index}>
+                        <td>{index + 1}.</td>
+                        <td>{line.replace("-", "")}</td>
+                      </tr>
+                    ))}
                 </tbody>
               </Table>
             </p>
@@ -280,17 +299,61 @@ const NewsScreen = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {newsData.gpt_named_entities
-                    .split("\n")
-                    .map((line, index) => (
-                      <tr key={index}>
-                        <td>{index + 1}.</td>
-                        <td>{line.replace("-", "")}</td>
-                      </tr>
-                    ))}
+                  {newsData &&
+                    newsData.gpt_named_entities &&
+                    newsData.gpt_named_entities
+                      .split("\n")
+                      .map((line, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}.</td>
+                          <td>{line.replace("-", "")}</td>
+                        </tr>
+                      ))}
                 </tbody>
               </Table>
             </p>
+            <div>
+              {isLoading ? ( // Display loading spinner while data is being fetched
+                <div className="text-center">
+                  <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
+                </div>
+              ) : (
+                predData && (
+                  <ResponsiveContainer width={"100%"} height={400}>
+                    <LineChart
+                      data={predData}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="Date" />
+                      <YAxis
+                        type="number"
+                        domain={["dataMin", "dataMax"]}
+                        tickFormatter={(value) => value.toFixed(2)}
+                      />
+                      <Tooltip />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="Close_x"
+                        name="Actual Price"
+                        stroke="#8884d8"
+                        tickCount={10}
+                        interval={0}
+                      />
+                      <Line
+                        name="Predicted Price"
+                        type="monotone"
+                        dataKey="Close_y"
+                        stroke="#ff7300"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )
+              )}
+            </div>
 
             {chartData && (
               <ResponsiveContainer width="100%" height={400}>

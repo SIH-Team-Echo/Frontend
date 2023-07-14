@@ -23,7 +23,7 @@ const SearchBar = ({ onCompanySelect }) => {
     axios
       .get("https://twelve-data1.p.rapidapi.com/stocks", {
         params: {
-          exchange: "NASDAQ",
+          exchange: "SGX",
           format: "json",
         },
         headers: {
@@ -57,6 +57,8 @@ const SearchBar = ({ onCompanySelect }) => {
     company.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const nearestMatches = getNearestMatches(filteredCompanies);
+
+  console.log(companies);
 
   return (
     <div className="search-bar-container">
