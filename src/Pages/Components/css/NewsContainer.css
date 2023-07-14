@@ -1,0 +1,50 @@
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
+}
+.item {
+  width: 100px;
+  text-align: center;
+  height: 150px;
+  font-size: 20px;
+  flex: 0 0 33%;
+  padding: 10px;
+  align-items: center;
+  display: flex;
+  color: black;
+  font-weight: 500;
+  transition: background-color 0.5s;
+}
+.item:hover {
+  cursor: pointer;
+  color: white;
+  background-color: #28282b !important;
+  font-weight: 700;
+}
+
+.item-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  margin: 0 auto;
+}
+
+.new-line {
+  white-space: break-spaces;
+}
+
+.color-display {
+  text-align: center;
+}
+.color-scale {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.color-block {
+  width: 40px;
+  height: 40px;
+}
