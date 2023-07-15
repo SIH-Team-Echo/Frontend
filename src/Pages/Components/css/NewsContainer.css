@@ -95,3 +95,17 @@
   text-orientation: mixed;
   position: absolute;
 }
+
+.hover-info {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: none;
+}
+
+.item:hover .hover-info {
+  display: block;
+}

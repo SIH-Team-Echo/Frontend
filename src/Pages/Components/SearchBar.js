@@ -58,8 +58,6 @@ const SearchBar = ({ onCompanySelect }) => {
   );
   const nearestMatches = getNearestMatches(filteredCompanies);
 
-  console.log(companies);
-
   return (
     <div className="search-bar-container">
       <input

@@ -6,7 +6,11 @@ import * as d3 from "d3";
 import "./css/NewsContainer.css";
 
 const NewsContainer = () => {
-  const [newsData, setnewsData] = useState(null);
+  const [newsData, setNewsData] = useState(null);
+  const [distinctEntities, setDistinctEntities] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredEntities, setFilteredEntities] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
   const min = 0;
   const max = 1;
   const navigate = useNavigate();
@@ -22,33 +26,93 @@ const NewsContainer = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const apiUrl = `http://localhost:5000/api/news`;
-        const response = await fetch(apiUrl, {
-          method: "GET",
-        });
-        const data = await response.json();
-        setnewsData(data);
-        // Extract the necessary data from the API response
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    };
     fetchData();
+    fetchDistinctEntities();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const apiUrl = `http://localhost:5000/api/news`;
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      setNewsData(data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const fetchDistinctEntities = async () => {
+    try {
+      const apiUrl = `http://localhost:5000/api/news/distinctEntities`;
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      setDistinctEntities(data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    filterEntities();
+  }, [searchTerm, distinctEntities]);
+
+  const filterEntities = () => {
+    const filtered = distinctEntities.filter((entity) =>
+      entity.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredEntities(filtered);
+  };
+
+  const handleInputChange = (event) => {
+    setSearchTerm(event.target.value);
+    setShowDropdown(true);
+  };
+
+  const handleClick = (item) => {
+    navigate(`/news/${item._id}/${item.ticker}`);
+  };
+
+  const handleDropdownItemClick = (entity) => {
+    setSearchTerm(entity);
+    setShowDropdown(false);
+  };
+
+  const handleShow = () => {
+    if (showDropdown == false) setShowDropdown(true);
+    else setShowDropdown(false);
+  };
 
   return (
     <div className="container-sh-pd">
       <h1 style={{ textAlign: "center" }}>
-        {" "}
         Risk Assessment of Insider Trading through News Analysis
       </h1>
+
+      <div className="search-bar">
+        <input
+          type="text"
+          className="search-input"
+          style={{ width: "17%", margin: "2%" }}
+          value={searchTerm}
+          onChange={handleInputChange}
+          placeholder="Search entities..."
+          onClick={handleShow}
+        />
+        {showDropdown && (
+          <ul className="search-results">
+            {filteredEntities.map((entity) => (
+              <li key={entity} onClick={() => handleDropdownItemClick(entity)}>
+                {entity}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       <div className="flex-container">
         <div className="color-display">
           <div className="color-display-text">
-            Increase in risk score <AiOutlineArrowDown />{" "}
+            Increase in Risk Score <AiOutlineArrowDown />{" "}
           </div>
           <div className="color-scale">
             {Array.from({ length: 25 }, (_, i) => (
@@ -63,41 +127,49 @@ const NewsContainer = () => {
         <br />
         <div className="flex-container news-container">
           {newsData &&
-            newsData.map((item) => {
-              const handleClick = () => {
-                navigate(`/news/${item._id}/${item.ticker}`);
-              };
-              return (
-                <div className="item" key={item._id} onClick={handleClick}>
-                  <p className="item-text">
-                    {" "}
-                    {camelCase(
-                      item.announcement_issuer_name.replace(/_/g, " ")
-                    )}
-                  </p>
-                  <div
-                    className="inside-item"
-                    style={{
-                      backgroundColor: d3.interpolatePurples(
-                        min + Math.random() * (max - min)
-                      ),
-                    }}
-                  ></div>
-                  <div
-                    className="inside-item"
-                    style={{
-                      backgroundColor: d3.interpolateOrRd(
-                        min + Math.random() * (max - min)
-                      ),
-                    }}
-                  ></div>
+            newsData.map((item) => (
+              <>
+                <div key={item._id} className="hover-info">
+                  <p>Summary : {item.gpt_summary}</p>
+                  <p>Published Date: {item.announcement_published_datetime}</p>
                 </div>
-              );
-            })}
+                {searchTerm === "" ||
+                searchTerm === item.announcement_security_name ? (
+                  <div
+                    className="item"
+                    key={item._id}
+                    onClick={() => handleClick(item)}
+                  >
+                    {console.log("matched")}
+                    <p className="item-text">
+                      {camelCase(
+                        item.announcement_issuer_name.replace(/_/g, " ")
+                      )}
+                    </p>
+                    <div
+                      className="inside-item"
+                      style={{
+                        backgroundColor: item.red_flag_score
+                          ? d3.interpolatePurples(item.red_flag_score)
+                          : "white",
+                      }}
+                    ></div>
+                    <div
+                      className="inside-item"
+                      style={{
+                        backgroundColor: item.speculative_score
+                          ? d3.interpolateReds(item.speculative_score)
+                          : "white",
+                      }}
+                    ></div>
+                  </div>
+                ) : null}
+              </>
+            ))}
         </div>
         <div className="color-display">
           <div className="color-display-text">
-            Increase in risk score <AiOutlineArrowDown />{" "}
+            Increase in Deviation score <AiOutlineArrowDown />{" "}
           </div>
           <div className="color-scale">
             {Array.from({ length: 25 }, (_, i) => (

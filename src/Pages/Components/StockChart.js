@@ -18,7 +18,7 @@ const StockChart = () => {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const [selectedCompany, setSelectedCompany] = useState("U14");
+  const [selectedCompany, setSelectedCompany] = useState("");
 
   const handleCompanySelect = (symbol) => {
     setSelectedCompany(symbol);
