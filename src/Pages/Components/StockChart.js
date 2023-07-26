@@ -47,6 +47,9 @@ const StockChart = () => {
 
   return (
     <div className="dashboard-container container-sh-pd ">
+      <h3 style={{ textAlign: "center" }}>
+        Past 3 months Predicted vs Actual Price
+      </h3>
       <div className="options-search">
         <SearchBar onCompanySelect={handleCompanySelect} />
       </div>

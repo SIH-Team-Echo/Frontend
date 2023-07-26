@@ -8,6 +8,7 @@ const Dashboard = () => {
   return (
     <>
       <NewsContainer />
+
       <StockChart />
     </>
   );
